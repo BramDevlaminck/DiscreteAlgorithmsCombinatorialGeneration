@@ -1,5 +1,5 @@
-
 __author__ = "Bram Devlaminck"
+
 
 def normalize_result(partitions: list[list[int]]) -> list[list[int]]:
     return [part[::-1] for part in partitions][::-1]
