@@ -149,7 +149,7 @@ def partition_lex_rank(m: int, n: int, partition: list[int]) -> int:
         else:
             for i in range(n):
                 b[i] -= 1
-            r = r + p[m - 1][n - 1]
+            r += p[m - 1][n - 1]
             m -= n
     return r
 
