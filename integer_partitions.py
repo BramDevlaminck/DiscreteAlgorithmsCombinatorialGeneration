@@ -91,7 +91,7 @@ def enum_partitions2(m: int):
     but same from here on wikipedia: https://en.wikipedia.org/wiki/Partition_function_(number_theory)
     => mistake in paper, if we sum the rows of enum_partitions function we get the same result as here
     """
-    p = [1]  # P(1) = 1
+    p = [1]  # P(0) = 1
 
     for i in range(1, m + 1):
         sign = 1
