@@ -48,8 +48,9 @@ def conjugate_partition(a: list[int]) -> list[int]:
 
 def gen_partitions2(m: int, n: int) -> list[list[int]]:
     """
-    Algorithm 3.3, max size n means that the biggest element in the array has value n,
-    not that each partition is n big or something like that
+    Algorithm 3.3
+
+    max size n means that the biggest element in each partition has value n,
     """
     partitions = rec_partition(m - n, n, 1)
     # instead of adding n as the first value, we add it as last since we still need to flip the results
@@ -59,7 +60,11 @@ def gen_partitions2(m: int, n: int) -> list[list[int]]:
 
 
 def gen_partitions3(m: int, n: int) -> list[list[int]]:
-    """algorithm 3.4"""
+    """
+    algorithm 3.4
+
+    Each partition will have length n
+    """
     partitions = rec_partition(m - n, n, 1)
     # append instead of insert since the partitions are still in reverse
     for part in partitions:
