@@ -71,7 +71,7 @@ def gen_partitions3(m: int, n: int) -> list[list[int]]:
 def enum_partitions(m: int, n: int) -> list[list[int]]:
     """Algorithm 3.5"""
 
-    # initialize, and use n+1 and m+1 since in the pseudocode the end is included
+    # initialize and use n+1 and m+1 since in the pseudocode the end is included
     matrix = [[0 for _ in range(n + 1)] for _ in range(m + 1)]
     matrix[0][0] = 1
 
@@ -112,7 +112,7 @@ def enum_partitions2(m: int):
     return p
 
 
-def partition_lex_successor(m: int, n: int, partition: list[int]) -> list[int] | None:
+def partition_lex_successor(_: int, n: int, partition: list[int]) -> list[int] | None:
     """Algorithm 3.7"""
     i = 1
     # find the minimal a_i
