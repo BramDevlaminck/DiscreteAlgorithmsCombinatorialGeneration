@@ -78,7 +78,9 @@ def enum_partitions(m: int, n: int) -> list[list[int]]:
     for i in range(1, m + 1):
         for j in range(1, min(i, n) + 1):
             matrix[i][j] = matrix[i - 1][j - 1]
-            if not (i < 2 * j):
+            # only do this if i > j since we need to dereference that
+            # writing this is results in the same result as using "if not (i < 2*j)", so I use this
+            if i > j:
                 matrix[i][j] += matrix[i - j][j]
     return matrix
 
@@ -178,7 +180,7 @@ if __name__ == '__main__':
     print("----")
     print(gen_partitions3(6, 4))
     print("----")
-    print(enum_partitions(10, 10))
+    print(enum_partitions(100, 100))
     print("----")
     print(enum_partitions2(30))
     print("----")
