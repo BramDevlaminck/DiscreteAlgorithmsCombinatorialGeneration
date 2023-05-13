@@ -65,15 +65,7 @@ def gen_partitions3(m: int, n: int) -> list[list[int]]:
 
     Each partition will have length n
     """
-    partitions = rec_partition(m - n, n, 1)
-    # append instead of insert since the partitions are still in reverse
-    for part in partitions:
-        part.append(n)
-    # flip each partition before calculating the conjugate
-    # since the conjugate formula expects the input partition in normal form
-    conjugates = [conjugate_partition(part[::-1]) for part in partitions]
-    # use insert now, since rec_partition2 will already have flipped the results since we conjugate everything
-    return conjugates
+    return [conjugate_partition(part) for part in gen_partitions2(m, n)]
 
 
 def enum_partitions(m: int, n: int) -> list[list[int]]:
@@ -180,7 +172,7 @@ def partition_lex_unrank(m: int, n: int, r: int) -> list[int]:
 if __name__ == '__main__':
     pretty_partition_print(gen_partitions1(6))
     print("----")
-    print(conjugate_partition([1, 2, 4]))
+    print(conjugate_partition([4, 2, 1]))
     print("----")
     print(gen_partitions2(6, 4))
     print("----")
