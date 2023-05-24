@@ -194,7 +194,6 @@ def generate_heaps_algorithm(k: int) -> list[list[int]]:
     return generate_recursive(k, [i + 1 for i in range(k)])
 
 
-
 if __name__ == "__main__":
     print(perm_lex_successor([1, 2, 3]))
     print("-----------")
