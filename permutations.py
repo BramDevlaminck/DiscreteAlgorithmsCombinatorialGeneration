@@ -166,6 +166,35 @@ def trotten_johnson_successor(input_permutation: list[int]) -> list[int] | None:
     return permutation
 
 
+def generate_heaps_algorithm(k: int) -> list[list[int]]:
+    """
+    The first simple (recursive) generate algorithm from the wikipedia page: https://en.wikipedia.org/wiki/Heap%27s_algorithm
+    """
+
+    def generate_recursive(k: int, current_res: list[int]) -> list[list[int]]:
+        """Recursive step for the generate algorithm"""
+        if k == 1:
+            # take copy since otherwise we will be mutating this exact array laster in another recursive step
+            return [current_res[::]]
+        else:
+            results = []
+            # recursive step for unchanged array
+            results += generate_recursive(k - 1, current_res)
+            # do mutations and recursive steps on these mutations
+            for i in range(k - 1):
+                if k % 2 == 0:
+                    current_res[i], current_res[k - 1] = current_res[k - 1], current_res[i]
+                else:
+                    current_res[0], current_res[k - 1] = current_res[k - 1], current_res[0]
+                # add results of recursive steps
+                results += generate_recursive(k - 1, current_res)
+            # return all the recursive steps
+            return results
+
+    return generate_recursive(k, [i + 1 for i in range(k)])
+
+
+
 if __name__ == "__main__":
     print(perm_lex_successor([1, 2, 3]))
     print("-----------")
@@ -180,4 +209,5 @@ if __name__ == "__main__":
     print(perm_parity([5, 1, 3, 4, 2]))
     print("-----------")
     print(trotten_johnson_successor([4, 3, 1, 2]))
-
+    print("-----------")
+    print(generate_heaps_algorithm(3))
