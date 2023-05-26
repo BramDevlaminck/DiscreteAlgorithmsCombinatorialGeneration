@@ -1,5 +1,7 @@
 import math
 
+__author__ = "Bram Devlaminck"
+
 
 def k_subset_lex_successor(given_subset: list[int], n: int) -> list[int] | None:
     """

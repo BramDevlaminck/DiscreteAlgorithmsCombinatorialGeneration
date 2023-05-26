@@ -1,3 +1,7 @@
+
+__author__ = "Bram Devlaminck"
+
+
 def subset_lex_rank(n: int, given_set: set[int]) -> int:
     """Algorithm 2.1"""
     rank = 0
