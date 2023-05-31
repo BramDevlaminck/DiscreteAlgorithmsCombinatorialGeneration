@@ -126,13 +126,17 @@ def partition_lex_successor(_: int, n: int, partition: list[int]) -> list[int] |
         return
 
     res = partition[::]
+    # increase a_i by 1
     res[i] += 1
-    d = -1
+    remainder_until_sum_complete = -1
     a_i = res[i]
     for j in range(i - 1, 0, -1):
-        d += res[j] - a_i
+        # add to the remainder how much of the sum will need to be compensated in a_1
+        remainder_until_sum_complete += res[j] - a_i
+        # set a_j to the updated a_i value
         res[j] = a_i
-    res[0] += d
+    # update a_1 to make sure the total sum is correct again
+    res[0] += remainder_until_sum_complete
     return res
 
 
