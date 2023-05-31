@@ -78,9 +78,9 @@ def enum_partitions(m: int, n: int) -> list[list[int]]:
     for i in range(1, m + 1):
         for j in range(1, min(i, n) + 1):
             matrix[i][j] = matrix[i - 1][j - 1]
-            # only do this if i > j since we need to dereference that
-            # writing this is results in the same result as using "if not (i < 2*j)", so I use this
-            if i > j:
+            if i - j >= j:
+                # only add P(i - j, j) if (i - j) >= j
+                # because P(m, n) == 0 if m < n, there is no point in doing the lookup in the matrix in that case
                 matrix[i][j] += matrix[i - j][j]
     return matrix
 
