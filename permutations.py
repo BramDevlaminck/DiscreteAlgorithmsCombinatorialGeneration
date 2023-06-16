@@ -71,11 +71,17 @@ def trotter_johnson_rank(permutation: list[int]) -> int:
     for j in range(2, n + 1):
         k = 1
         i = 0
+        # search for the location of j in the permutation, in this iteration we see j as the "biggest value"
+        # of the permutation => ignore all the values that are bigger than j to calculate the position
         while permutation[i] != j:
+            # we ignore all the values bigger than j to calculate the position of j in the permutation
+            # since as explained earlier: we see j as the maximum value of the permutation
+            # all the other values are only "inserted later" by recursion (if we had implemented this recursively)
             if permutation[i] < j:
                 k += 1
             i += 1
 
+        # adjust the rank appropriately depending on if we were on an even or odd rank
         if rank % 2 == 0:
             rank = j * rank + j - k
         else:
@@ -87,8 +93,8 @@ def trotter_johnson_rank(permutation: list[int]) -> int:
 def trotter_johnson_unrank(n: int, rank: int) -> list[int]:
     """Algorithm 2.18"""
 
-    permutation = [0 for _ in range(n)]
-    permutation[0] = 1
+    # the base permutation is just the value 1, we will add to this to create the final permutation
+    permutation = [1]
     r2 = 0
 
     for j in range(2, n + 1):
@@ -96,10 +102,9 @@ def trotter_johnson_unrank(n: int, rank: int) -> list[int]:
         k = (r1 - j * r2)
         # calculate until where we have to loop
         end_index = j - k - 2 if r2 % 2 == 0 else k - 1
-        # execute the move to the right until end_index
-        for i in range(j - 2, end_index, -1):
-            permutation[i + 1] = permutation[i]
-        permutation[end_index + 1] = j
+        # perform insertion at right index
+        # (doing it this way removes the need to manually move all the elements to the right)
+        permutation.insert(end_index + 1, j)
 
         # update r2 with r1
         r2 = r1
@@ -110,17 +115,22 @@ def trotter_johnson_unrank(n: int, rank: int) -> list[int]:
 def perm_parity(permutation: list[int]) -> int:
     """Algorithm 2.19"""
     n = len(permutation)
-    a = [0 for _ in range(n)]
-    c = 0
+    visited = [False for _ in range(n)]
+    number_of_circuits = 0
     for j in range(n):
-        if a[j] == 0:
-            c += 1
-            a[j] = 1
+        # if not visited[j] => count it as a circuit and visit the complete circuit
+        if not visited[j]:
+            number_of_circuits += 1
+            visited[j] = True
+            # expand this current circuit,
+            # to make sure we don't count the other nodes that are in this circuit as a separate circuit
+            # "permutation[i] != j + 1" will be False when we revisit the node that we started
+            # => we don't follow the circuit endlessly
             i = j
             while permutation[i] != j + 1:
                 i = permutation[i] - 1
-                a[i] = 1
-    return (n - c) % 2
+                visited[i] = True
+    return (n - number_of_circuits) % 2
 
 
 def trotten_johnson_successor(input_permutation: list[int]) -> list[int] | None:
@@ -130,33 +140,42 @@ def trotten_johnson_successor(input_permutation: list[int]) -> list[int] | None:
     Return the successor if it exists, otherwise return None
     """
     n = len(input_permutation)
-    st = 0
-    rho = input_permutation[::]
+    start_index = 0
+    # this is a copy used to modify and "simulate" the recursive formulation of the algorithm
+    working_permutation = input_permutation[::]
     # in this array we build op our result
     permutation = input_permutation[::]
 
     done = False
     m = n
     while m > 1 and not done:
-        d = 0
-        while rho[d] != m:
-            d += 1
+        # search the index of where the maximum value is located in the permutation
+        d = working_permutation.index(m)
 
-        for i in range(d, m - 1):
-            rho[i] = rho[i + 1]
+        # simulate the recursion by removing the biggest element d out of the permutation
+        del working_permutation[d]
 
-        if perm_parity(rho[:m - 1]) == 1:
+        if perm_parity(working_permutation) == 1:
+            # odd parity
+
+            # we are at the end => decrease m for smaller recursive step where we need to transpose 2 values
             if d == m - 1:
                 m -= 1
             else:
-                permutation[st + d], permutation[st + d + 1] = permutation[st + d + 1], permutation[st + d]
+                # not at the end of the diagonal => transpose here
+                permutation[start_index + d], permutation[start_index + d + 1] = permutation[start_index + d + 1], permutation[start_index + d]
                 done = True
         else:
+            # even parity
+
+            # we are at the beginning => decrease m for smaller recursive step where we need to transpose 2 values
+            # and increase start index
             if d == 0:
                 m -= 1
-                st += 1
+                start_index += 1
             else:
-                permutation[st + d], permutation[st + d - 1] = permutation[st + d - 1], permutation[st + d]
+                # not at the beginning of the diagonal => transpose here
+                permutation[start_index + d], permutation[start_index + d - 1] = permutation[start_index + d - 1], permutation[start_index + d]
                 done = True
     # no successor exists
     if m == 1:

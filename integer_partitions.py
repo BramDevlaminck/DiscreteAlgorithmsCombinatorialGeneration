@@ -147,12 +147,16 @@ def partition_lex_rank(m: int, n: int, partition: list[int]) -> int:
 
     r = 0
     while m > 0:
+        # there is a 1 at the end => just remove this 1 (== P(m, n) => P(m-1, n-1))
         if b[n - 1] == 1:
             m -= 1
             n -= 1
-        else:
+        else:  # there is no 1 to be found
+            # P(m, n) => P(m - n, n)
             for i in range(n):
                 b[i] -= 1
+
+            # add to the rank all the number of partitions that DO have a 1 in them, since they all have a smaller rank!
             r += p[m - 1][n - 1]
             m -= n
     return r

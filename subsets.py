@@ -21,35 +21,37 @@ def subset_lex_unrank(n: int, rank: int) -> set[int]:
     return result
 
 
-def symmetric_difference(set1: set[int], set2: set[int]) -> set[int]:
-    """The Δ operation for gray algorithm in the paper"""
-    return (set1 - set2).union(set2 - set1)
-
-
 def gray_code_successor(n: int, given_set: set[int]) -> set[int] | None:
     """
     Algorithm 2.3
 
     Returns the successor if it exists, otherwise None
     """
-    if len(given_set) % 2 == 0:
-        return symmetric_difference(given_set, {n})
 
-    j = n
-    while j not in given_set and j > 0:
-        j -= 1
+    # if the number of elements in the set is even, we flip the last bit
+    # or otherwise said, we take the symmetric distance with the maximum allowed value in the set
+    # this max allowed value is the last bit. If it was already in given_set, it will be removed (== flip 1 to 0-
+    # if it was not yet in the given_set, we add it (== flip 0 to 1)
+    if len(given_set) % 2 == 0:
+        return given_set.symmetric_difference({n})
+
+    # there is an odd number of elements in the set
+    # find the most right bit that has value 1, and flip the bit to the left of it
+    # or otherwise said, find the maximum value in the set and flip the value that is 1 smaller
+    # this flip is once again done with the symmetric_difference
+    j = max(given_set)
     if j == 1:
         return None
 
-    return symmetric_difference(given_set, {j - 1})
+    return given_set.symmetric_difference({j - 1})
 
 
 def gray_code_rank(n: int, given_subset: set[int]) -> int:
     """Algorithm 2.4"""
     rank = 0
-    bit = 0
+    bit = 0  # b_n = 0
     for i in range(n - 1, -1, -1):
-        if n - i in given_subset:
+        if n - i in given_subset:  # a_i == 1 if n - i in given_subset
             # this is another way of writing bit = 1 - bit,
             # which is just a bit flip (if bit == 1, then make it 0, if bit == 0, then make it 1)
             bit ^= 1
@@ -64,6 +66,8 @@ def gray_code_unrank(n: int, rank: int) -> set[int]:
     previous_bit = 0
     for i in range(n - 1, -1, -1):
         bit = rank // (2 ** i)
+        # this inequality is the same as saying "a_i = (b_i + b_{i+1}) mod 2"
+        # in our non-binary implementation this a_i is "n - 1"
         if bit != previous_bit:
             result.add(n - i)
         previous_bit = bit
